@@ -234,7 +234,7 @@ export class LogicalAgent extends Agent {
           // Check if we face this dir
           if (state.facing === dirToShoot) {
              this.addLog(`[Step ${this.steps}] Wumpus MUST be at (${knownWumpusPos.r},${knownWumpusPos.c}). Firing arrow ${dirToShoot}!`);
-             return { type: 'SHOOT' };
+             return { type: 'SHOOT', direction: dirToShoot };
           } else {
              // We need to face it to shoot. A MOVE action acts as a "move into" but for the sake of Wumpus, 
              // wait, in our game, you press shoot and it shoots in facing dir. Moving rotates you. 
