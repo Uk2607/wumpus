@@ -1,4 +1,5 @@
 import { CellData } from '../game/types';
+import { Navigation, Skull, CircleDashed, Coins, Wind, Biohazard, Sparkles, HelpCircle } from 'lucide-react';
 
 interface Props {
   data: CellData;
@@ -17,13 +18,15 @@ export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode }) =
     else if (data.uncertain) borderColor = 'var(--accent-gold)';
   }
 
-  const getPlayerIcon = () => {
+  const getRotationAngle = () => {
+    // Navigation icon natively points top-right (45deg), so we subtract 45 to point straight up for 'N'
+    const offset = -45;
     switch (facing) {
-      case 'N': return '▲';
-      case 'E': return '▶';
-      case 'S': return '▼';
-      case 'W': return '◀';
-      default: return '◉_◉';
+      case 'N': return 0 + offset;
+      case 'E': return 90 + offset;
+      case 'S': return 180 + offset;
+      case 'W': return -90 + offset;
+      default: return 0 + offset;
     }
   };
 
@@ -51,19 +54,19 @@ export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode }) =
     >
       {isRevealed && (
         <>
-          <div style={{ position: 'absolute', top: 2, left: 2, display: 'flex', gap: '2px', fontSize: '0.8em' }}>
-            {data.stench && <span>🤢</span>}
-            {data.breeze && <span>💨</span>}
+          <div style={{ position: 'absolute', top: 2, left: 2, display: 'flex', gap: '4px', padding: '2px' }}>
+            {data.stench && <Biohazard size={16} color="#a8ff5c" />}
+            {data.breeze && <Wind size={16} color="lightblue" />}
           </div>
           
-          <div style={{ position: 'absolute', bottom: 2, right: 2, display: 'flex', gap: '2px' }}>
-            {data.glitter && <span>✨</span>}
+          <div style={{ position: 'absolute', bottom: 2, right: 2, display: 'flex', gap: '4px', padding: '2px' }}>
+            {data.glitter && <Sparkles size={16} color="gold" />}
           </div>
 
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '1.5em' }}>
-            {data.hasPit && '🕳️'}
-            {data.hasWumpus && '💀'}
-            {data.hasGold && '🪙'}
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {data.hasPit && <CircleDashed size={32} fill="#111" color="#555" />}
+            {data.hasWumpus && !data.hasPit && !data.hasGold && <Skull size={32} color="var(--danger-red)" />}
+            {data.hasGold && !data.hasPit && <Coins size={32} color="gold" />}
           </div>
         </>
       )}
@@ -72,18 +75,18 @@ export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode }) =
         <div style={{
            position: 'absolute', 
            zIndex: 10, 
-           color: 'var(--accent-gold)', 
-           textShadow: '0 0 5px #000',
-           fontSize: '1.5em',
-           // transform: `rotate(${facing === 'N' ? 0 : facing === 'E' ? 90 : facing === 'S' ? 180 : -90}deg)`
-           // We're using direct arrow characters instead of rotating emoji since it can be inconsistent across OS.
+           transform: `rotate(${getRotationAngle()}deg)`,
+           display: 'flex',
+           alignItems: 'center',
+           justifyContent: 'center',
+           filter: 'drop-shadow(0 0 5px rgba(0,0,0,0.8))'
         }}>
-          {getPlayerIcon()}
+          <Navigation size={28} color="var(--accent-gold)" fill="var(--accent-gold)" />
         </div>
       )}
 
       {simMode && !data.visited && !data.hasWumpus && !data.hasPit && !data.hasGold && (
-         <div style={{ opacity: 0.2 }}>❓</div>
+         <div style={{ opacity: 0.2 }}><HelpCircle size={24} /></div>
       )}
     </div>
   );

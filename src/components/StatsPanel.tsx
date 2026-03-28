@@ -8,9 +8,10 @@ interface Props {
   openSettings: () => void;
   onForfeit: () => void;
   onAIHelp: () => void;
+  openHowToPlay: () => void;
 }
 
-export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, onClimbOut, openSettings, onForfeit, onAIHelp }) => {
+export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, onClimbOut, openSettings, onForfeit, onAIHelp, openHowToPlay }) => {
   return (
     <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <h2 className="title-flicker" style={{ fontSize: '1.8rem', margin: '0' }}>HUNT THE WUMPUS</h2>
@@ -47,8 +48,9 @@ export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, onClimbOut, 
         )}
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button style={{ flex: 1 }} onClick={onRestart}>🔄 Restart</button>
-          <button style={{ flex: 1 }} onClick={openSettings}>⚙️ Settings</button>
+          <button style={{ flex: 1, padding: '8px 4px', fontSize: '0.9rem' }} onClick={onRestart}>🔄 Restart</button>
+          <button style={{ flex: 1, padding: '8px 4px', fontSize: '0.9rem' }} onClick={openSettings}>⚙️ Settings</button>
+          <button style={{ flex: 1, padding: '8px 4px', fontSize: '0.9rem' }} onClick={openHowToPlay}>📖 Rules</button>
         </div>
       </div>
 

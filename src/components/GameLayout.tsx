@@ -5,6 +5,7 @@ import { StatsPanel } from './StatsPanel';
 import { LogPanel } from './LogPanel';
 import { SettingsModal } from './SettingsModal';
 import { GameOverModal } from './GameOverModal';
+import { HowToPlayModal } from './HowToPlayModal';
 import type { AgentType } from '../game/types';
 import type { Agent } from '../agent/AgentModel';
 import { RandomAgent } from '../agent/RandomAgent';
@@ -15,6 +16,7 @@ export const GameLayout: React.FC = () => {
   const { gameState, logs, initGame, movePlayer, pickupGold, turnPlayer, shootArrow, climbOut, getCellData, addLog, setGameState, forfeitGame } = useGame();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [gameMode, setGameMode] = useState<'MANUAL' | 'SIMULATION'>('MANUAL');
   const [gridSize, setGridSize] = useState(6);
   const [arrows, setArrows] = useState(3);
@@ -185,6 +187,7 @@ export const GameLayout: React.FC = () => {
           onRestart={handleRestart}
           onClimbOut={() => climbOut(false)}
           openSettings={() => setIsSettingsOpen(true)}
+          openHowToPlay={() => setIsHowToPlayOpen(true)}
           onForfeit={forfeitGame}
           onAIHelp={handleAIHelp}
         />
@@ -244,6 +247,11 @@ export const GameLayout: React.FC = () => {
         agentType={agentType} setAgentType={setAgentType}
         speedMs={speedMs} setSpeedMs={setSpeedMs}
         onRestart={handleRestart}
+      />
+      
+      <HowToPlayModal 
+        isOpen={isHowToPlayOpen} 
+        onClose={() => setIsHowToPlayOpen(false)} 
       />
     </div>
   );
