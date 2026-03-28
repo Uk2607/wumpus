@@ -186,6 +186,7 @@ export function useGame() {
       if (goldIndex !== -1) {
         nextState.golds = [...nextState.golds];
         nextState.golds[goldIndex] = { ...nextState.golds[goldIndex], collected: true };
+        nextState.score += 1000;
         addLog("🪙 You picked up the Gold!", 'success');
         audio.playGoldPickup();
       } else {
