@@ -53,7 +53,7 @@ export const SettingsModal: React.FC<Props> = (props) => {
               style={{ flex: 1, borderColor: props.gameMode === 'SIMULATION' ? 'var(--safe-cyan)' : '#555', color: props.gameMode === 'SIMULATION' ? 'var(--safe-cyan)' : '#555' }}
               onClick={() => props.setGameMode('SIMULATION')}
             >
-              AI Sim
+              BOT Sim
             </button>
           </div>
         </div>

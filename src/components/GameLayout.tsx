@@ -118,7 +118,7 @@ export const GameLayout: React.FC = () => {
     helperAgent.bootstrapKB(gameState);
 
     const action = helperAgent.nextAction(gameState);
-    addLog(`🤖 AI Help determined action: ${action.type}${action.direction ? ' ' + action.direction : ''}`, 'info');
+    addLog(`🤖 Bot determined action: ${action.type}${action.direction ? ' ' + action.direction : ''}`, 'info');
 
     if (action.type === 'CLIMB') {
       climbOut(false);
