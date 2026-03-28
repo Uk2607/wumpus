@@ -91,7 +91,7 @@ export const SettingsModal: React.FC<Props> = (props) => {
         <div>
           <label>Pits:</label>
           <select value={props.pitCount} onChange={e => props.setPitCount(Number(e.target.value))} style={{ width: '100%', marginTop: '5px' }}>
-            <option value={2}>2</option>
+            <option value={3}>3</option>
             <option value={4}>4</option>
             <option value={7}>7</option>
             <option value={10}>10</option>

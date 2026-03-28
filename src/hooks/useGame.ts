@@ -12,12 +12,10 @@ export interface GameLog {
 export function useGame() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [logs, setLogs] = useState<GameLog[]>([]);
-  const [logId, setLogId] = useState(0);
 
   const addLog = useCallback((message: string, type: 'info' | 'percept' | 'danger' | 'success' = 'info') => {
-    setLogs(prev => [...prev.slice(-49), { id: logId, message, type }]); // Keep last 50 logs
-    setLogId(prev => prev + 1);
-  }, [logId]);
+    setLogs(prev => [...prev.slice(-49), { id: Date.now() + Math.random(), message, type }]); // Keep last 50 logs
+  }, []);
 
   const initGame = useCallback((
     size: number = 6, 
@@ -49,8 +47,7 @@ export function useGame() {
     };
     
     setGameState(newState);
-    setLogs([{ id: -1, message: 'Entered the dungeon. Find all the gold and escape.', type: 'info' }]);
-    setLogId(0);
+    setLogs([{ id: Date.now() + Math.random(), message: 'Entered the dungeon. Find all the gold and escape.', type: 'info' }]);
     audio.init();
     checkPercepts(newState);
   }, [addLog]);
@@ -148,7 +145,7 @@ export function useGame() {
       // Bump wall
       if (nextR < 0 || nextR >= nextState.gridSize || nextC < 0 || nextC >= nextState.gridSize) {
         addLog("💥 BUMP! You walked into a wall.", 'danger');
-        nextState.score -= 10;
+        // nextState.score -= 10;
         return nextState;
       }
       
@@ -227,6 +224,7 @@ export function useGame() {
 
         if (isHit) {
           hitIndex = idx;
+          nextState.score += 1000;
         }
       });
 
