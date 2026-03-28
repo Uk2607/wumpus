@@ -18,12 +18,12 @@ export const GameLayout: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [gameMode, setGameMode] = useState<'MANUAL' | 'SIMULATION'>('MANUAL');
-  const [gridSize, setGridSize] = useState(6);
-  const [arrows, setArrows] = useState(3);
+  const [gridSize, setGridSize] = useState(4);
+  const [arrows, setArrows] = useState(1);
   const [showPerceptIcons, setShowPerceptIcons] = useState(true);
 
   const [wumpusCount, setWumpusCount] = useState(1);
-  const [pitCount, setPitCount] = useState(4);
+  const [pitCount, setPitCount] = useState(3);
   const [goldCount, setGoldCount] = useState(1);
 
   // Sim state
