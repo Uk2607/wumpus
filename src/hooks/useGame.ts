@@ -47,7 +47,7 @@ export function useGame() {
     };
     
     setGameState(newState);
-    setLogs([{ id: Date.now() + Math.random(), message: 'Entered the dungeon. Find all the gold and escape.', type: 'info' }]);
+    setLogs([{ id: Date.now() + Math.random(), message: 'Entered the dungeon. Find all the gold and escape to (0,0).', type: 'info' }]);
     audio.init();
     checkPercepts(newState);
   }, [addLog]);
@@ -168,8 +168,16 @@ export function useGame() {
         addLog(pit ? "🕳️ You fell into a pit!" : "💀 The Wumpus ate you!", 'danger');
         audio.playDeath();
       } else {
-        // Percepts
-        setTimeout(() => checkPercepts(nextState, nextState.playerPos), 10);
+        // Check for automatic win: at (0,0) with all gold collected
+        if (nextR === 0 && nextC === 0 && nextState.golds.every(g => g.collected)) {
+          nextState.status = 'WON';
+          nextState.score += 1000;
+          addLog("🏆 You returned with all the gold! VICTORY!", 'success');
+          audio.playVictory();
+        } else {
+          // Percepts
+          setTimeout(() => checkPercepts(nextState, nextState.playerPos), 10);
+        }
       }
 
       return nextState;
@@ -189,6 +197,14 @@ export function useGame() {
         nextState.score += 1000;
         addLog("🪙 You picked up the Gold!", 'success');
         audio.playGoldPickup();
+        
+        // Check win right after picking up if we are at origin
+        if (nextState.playerPos.r === 0 && nextState.playerPos.c === 0 && nextState.golds.every(g => g.collected)) {
+          nextState.status = 'WON';
+          nextState.score += 1000; // Extra bonus for escaping
+          addLog("🏆 You returned with all the gold! VICTORY!", 'success');
+          audio.playVictory();
+        }
       } else {
         addLog("There is no gold here to pick up.", 'info');
       }
@@ -242,23 +258,7 @@ export function useGame() {
     });
   }, [gameState, addLog]);
 
-  const climbOut = useCallback((fromAgent: boolean = false) => {
-    if (!gameState || gameState.status !== 'PLAYING') return;
 
-    const allGoldsCollected = gameState.golds.every(g => g.collected);
-
-    if (gameState.playerPos.r === 0 && gameState.playerPos.c === 0 && allGoldsCollected) {
-      setGameState(prev => {
-        if (!prev) return prev;
-        const nextState = { ...prev, status: 'WON' as const, score: prev.score + 1000 };
-        addLog("🏆 You climbed out with all the gold! VICTORY!", 'success');
-        audio.playVictory();
-        return nextState;
-      });
-    } else {
-      if(!fromAgent) addLog(allGoldsCollected ? "You must be at the entrance to climb out!" : "You need to collect ALL the gold before climbing out!", 'danger');
-    }
-  }, [gameState, addLog]);
 
   const forfeitGame = useCallback(() => {
     if (!gameState || gameState.status !== 'PLAYING') return;
@@ -277,7 +277,6 @@ export function useGame() {
     turnPlayer,
     shootArrow,
     pickupGold,
-    climbOut,
     forfeitGame,
     getCellData,
     addLog,

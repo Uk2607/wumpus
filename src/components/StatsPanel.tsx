@@ -1,18 +1,17 @@
 import React from 'react';
 import { GameState } from '../game/types';
-import { Target, Skull, CircleDashed, Coins, MapPin, Compass, Footprints, Trophy, DoorOpen, Flag, Bot, RotateCcw, Settings, Book } from 'lucide-react';
+import { Target, Skull, CircleDashed, Coins, MapPin, Compass, Footprints, Trophy, Flag, Bot, RotateCcw, Settings, Book } from 'lucide-react';
 
 interface Props {
   gameState: GameState;
   onRestart: () => void;
-  onClimbOut: () => void;
   openSettings: () => void;
   onForfeit: () => void;
   onAIHelp: () => void;
   openHowToPlay: () => void;
 }
 
-export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, onClimbOut, openSettings, onForfeit, onAIHelp, openHowToPlay }) => {
+export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, openSettings, onForfeit, onAIHelp, openHowToPlay }) => {
   return (
     <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <h2 className="title-flicker" style={{ fontSize: '1.8rem', margin: '0' }}>HUNT THE WUMPUS</h2>
@@ -29,19 +28,6 @@ export const StatsPanel: React.FC<Props> = ({ gameState, onRestart, onClimbOut, 
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: 'auto' }}>
-        <button 
-          onClick={onClimbOut} 
-          disabled={!gameState.golds.every(g => g.collected) || gameState.playerPos.r !== 0 || gameState.playerPos.c !== 0 || gameState.status !== 'PLAYING'}
-          style={{ 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            borderColor: 'var(--safe-cyan)', 
-            color: 'var(--safe-cyan)',
-            boxShadow: (!gameState.golds.every(g => g.collected) || gameState.playerPos.r !== 0 || gameState.playerPos.c !== 0) ? 'none' : '0 0 10px rgba(125,207,255,0.3)' 
-          }}
-        >
-          <DoorOpen size={18} /> Climb Out
-        </button>
-
         {gameState.mode === 'MANUAL' && gameState.status === 'PLAYING' && (
           <div style={{ display: 'flex', gap: '10px' }}>
             <button style={{ flex: 1, borderColor: 'var(--danger-red)', color: 'var(--danger-red)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={onForfeit}><Flag size={16} /> Forfeit</button>

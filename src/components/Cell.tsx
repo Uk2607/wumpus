@@ -1,14 +1,16 @@
 import { CellData } from '../game/types';
-import { Navigation, Skull, CircleDashed, Coins, Wind, Biohazard, Sparkles, HelpCircle } from 'lucide-react';
+import { Navigation, Skull, CircleDashed, Coins, Wind, Biohazard, Sparkles, HelpCircle, DoorOpen } from 'lucide-react';
 
 interface Props {
   data: CellData;
   isPlayerHere: boolean;
   facing: string;
   simMode: boolean; // if true, reveals content X-ray style
+  isOrigin?: boolean;
+  allGoldCollected?: boolean;
 }
 
-export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode }) => {
+export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode, isOrigin, allGoldCollected }) => {
   const isRevealed = simMode || data.visited;
   
   let borderColor = 'var(--cell-border)';
@@ -67,6 +69,7 @@ export const Cell: React.FC<Props> = ({ data, isPlayerHere, facing, simMode }) =
             {data.hasPit && <CircleDashed size={32} fill="#111" color="#555" />}
             {data.hasWumpus && !data.hasPit && !data.hasGold && <Skull size={32} color="var(--danger-red)" />}
             {data.hasGold && !data.hasPit && <Coins size={32} color="gold" />}
+            {isOrigin && allGoldCollected && <DoorOpen size={32} color="var(--safe-cyan)" />}
           </div>
         </>
       )}

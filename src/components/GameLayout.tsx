@@ -4,7 +4,6 @@ import { GridMap } from './GridMap';
 import { StatsPanel } from './StatsPanel';
 import { LogPanel } from './LogPanel';
 import { SettingsModal } from './SettingsModal';
-import { GameOverModal } from './GameOverModal';
 import { HowToPlayModal } from './HowToPlayModal';
 import type { AgentType } from '../game/types';
 import type { Agent } from '../agent/AgentModel';
@@ -13,7 +12,7 @@ import { LogicalAgent } from '../agent/LogicalAgent';
 import { GreedySafeAgent } from '../agent/GreedySafeAgent';
 
 export const GameLayout: React.FC = () => {
-  const { gameState, logs, initGame, movePlayer, pickupGold, turnPlayer, shootArrow, climbOut, getCellData, addLog, setGameState, forfeitGame } = useGame();
+  const { gameState, logs, initGame, movePlayer, pickupGold, turnPlayer, shootArrow, getCellData, addLog, setGameState, forfeitGame } = useGame();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
@@ -96,7 +95,8 @@ export const GameLayout: React.FC = () => {
     const action = agentRef.current!.nextAction(gameState);
 
     if (action.type === 'CLIMB') {
-      climbOut(true);
+      // Game handles automatic win when reaching (0,0) with all gold.
+      // So no explicit climb action is needed.
     } else if (action.type === 'PICKUP') {
       pickupGold();
     } else if (action.type === 'SHOOT' && action.direction) {
@@ -110,7 +110,7 @@ export const GameLayout: React.FC = () => {
     } else if (action.type === 'MOVE' && action.direction) {
       movePlayer(action.direction);
     }
-  }, [gameState, agentType, climbOut, pickupGold, movePlayer, shootArrow, addLog, setGameState]);
+  }, [gameState, agentType, pickupGold, movePlayer, shootArrow, addLog, setGameState]);
 
   const handleAIHelp = useCallback(() => {
     if (!gameState || gameState.status !== 'PLAYING') return;
@@ -121,7 +121,7 @@ export const GameLayout: React.FC = () => {
     addLog(`🤖 Bot determined action: ${action.type}${action.direction ? ' ' + action.direction : ''}`, 'info');
 
     if (action.type === 'CLIMB') {
-      climbOut(false);
+      // Game handles automatic win when reaching (0,0) with all gold.
     } else if (action.type === 'PICKUP') {
       pickupGold();
     } else if (action.type === 'SHOOT' && action.direction) {
@@ -133,7 +133,7 @@ export const GameLayout: React.FC = () => {
     } else if (action.type === 'MOVE' && action.direction) {
       movePlayer(action.direction);
     }
-  }, [gameState, addLog, climbOut, pickupGold, movePlayer, shootArrow, setGameState]);
+  }, [gameState, addLog, pickupGold, movePlayer, shootArrow, setGameState]);
 
   const stepRef = useRef(stepSim);
   useEffect(() => {
@@ -185,7 +185,6 @@ export const GameLayout: React.FC = () => {
         <StatsPanel
           gameState={gameState}
           onRestart={handleRestart}
-          onClimbOut={() => climbOut(false)}
           openSettings={() => setIsSettingsOpen(true)}
           openHowToPlay={() => setIsHowToPlayOpen(true)}
           onForfeit={forfeitGame}
@@ -221,11 +220,6 @@ export const GameLayout: React.FC = () => {
             simMode={gameState.mode === 'SIMULATION' || gameState.status !== 'PLAYING'}
             agentKb={getAgentKb()}
           />
-          <GameOverModal
-            status={gameState.status}
-            score={gameState.score}
-            onRestart={handleRestart}
-          />
         </div>
       </div>
 
@@ -248,10 +242,10 @@ export const GameLayout: React.FC = () => {
         speedMs={speedMs} setSpeedMs={setSpeedMs}
         onRestart={handleRestart}
       />
-      
-      <HowToPlayModal 
-        isOpen={isHowToPlayOpen} 
-        onClose={() => setIsHowToPlayOpen(false)} 
+
+      <HowToPlayModal
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
       />
     </div>
   );

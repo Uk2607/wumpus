@@ -13,7 +13,7 @@ export const GridMap: React.FC<Props> = ({ gameState, getCellData, simMode, agen
   const size = gameState.gridSize;
 
   return (
-    <div 
+    <div
       className="glass-panel"
       style={{
         display: 'grid',
@@ -26,7 +26,7 @@ export const GridMap: React.FC<Props> = ({ gameState, getCellData, simMode, agen
         padding: '16px',
       }}
     >
-      {Array.from({ length: size }).map((_, r) => 
+      {Array.from({ length: size }).map((_, r) =>
         Array.from({ length: size }).map((_, c) => {
           const data = getCellData(r, c);
           if (simMode) {
@@ -42,12 +42,14 @@ export const GridMap: React.FC<Props> = ({ gameState, getCellData, simMode, agen
           }
 
           return (
-            <Cell 
+            <Cell
               key={`${r}-${c}`}
               data={data}
               isPlayerHere={gameState.playerPos.r === r && gameState.playerPos.c === c}
               facing={gameState.facing}
               simMode={simMode}
+              isOrigin={r === 0 && c === 0}
+              allGoldCollected={gameState.golds.every(g => g.collected)}
             />
           );
         })
